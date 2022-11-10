@@ -10,18 +10,20 @@ const { User } = require("../../models");
 // - get /api/users
 router.get("/", (req, res) => {
   // orm | accesses User model and runs .findAll method
-  User.findAll({ // SELECT * FROM users;
-    attributes: { exclude: ['password'] } // instructs sql query to exclude password column
+  User.findAll({
+    // SELECT * FROM users;
+    attributes: { exclude: ["password"] }, // instructs sql query to exclude password column
   })
-  .then((dbUserData) => res.json(dbUserData))
-  .catch((err) => {
-    console.log(err);
-    res.status(500).json(err);
-  });
+    .then((dbUserData) => res.json(dbUserData))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 });
 router.get("/:id", (req, res) => {
-  User.findOne({ // SELECT * FROM users WHERE id = 1
-    attributes: { exclude: ['password']},
+  User.findOne({
+    // SELECT * FROM users WHERE id = 1
+    attributes: { exclude: ["password"] },
     where: {
       id: req.params.id,
     },
@@ -40,59 +42,61 @@ router.get("/:id", (req, res) => {
 });
 
 // - post /api/users
-router.post("/", (req, res) => { // INSERT INTO (users, email, password) VALUES ("username value", "email value, "password value");
-    User.create({
-        username: req.body.username,
-        email: req.body.email,
-        password: req.body.password
-    })
-    .then(dbUserData => res.json(dbUserData))
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
+router.post("/", (req, res) => {
+  // INSERT INTO (users, email, password) VALUES ("username value", "email value, "password value");
+  User.create({
+    username: req.body.username,
+    email: req.body.email,
+    password: req.body.password,
+  })
+    .then((dbUserData) => res.json(dbUserData))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
     });
 });
 
 // - put /api/users/1
 router.put("/:id", (req, res) => {
-    // UPDATE users
-    // SET username = 'escowin', email = 'edwin@escowinart.com', password = 'password'
-    // WHERE id = 1;
-    User.update(req.body, {
-        where: {
-            id: req.params.id
-        }
+  // UPDATE users
+  // SET username = 'username', email = 'email', password = 'password'
+  // WHERE id = 1;
+  User.update(req.body, {
+    individualHooks: true,
+    where: {
+      id: req.params.id,
+    },
+  })
+    .then((dbUserData) => {
+      if (!dbUserData[0]) {
+        res.status(404).json({ message: "no user found with this id" });
+        return;
+      }
+      res.json(dbUserData);
     })
-    .then(dbUserData => {
-        if (!dbUserData[0]) {
-            res.status(404).json({ message: 'no user found with this id'});
-            return;
-        }
-        res.json(dbUserData);
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
     });
 });
 
 // - delete /api/users/1
 router.delete("/:id", (req, res) => {
-    User.destroy({
-        where: {
-            id: req.params.id
-        }
+  User.destroy({
+    where: {
+      id: req.params.id,
+    },
+  })
+    .then((dbUserData) => {
+      if (!dbUserData) {
+        res.status(404).json({ message: "no user found with this id" });
+        return;
+      }
+      res.json(dbUserData);
     })
-    .then(dbUserData => {
-        if (!dbUserData) {
-            res.status(404).json({ message: 'no user found with this id' });
-            return;
-        }
-        res.json(dbUserData);
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json(err);
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
     });
 });
 
