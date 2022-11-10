@@ -3,7 +3,12 @@ const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/connection');
 
 // creates User model. Extending it from seuelize's Model class allows User to inherit Model db crud functionality
-class User extends Model {}
+class User extends Model {
+    // sets up method to run on instance data (per user) to check password
+    checkPassword(loginPw) {
+        return bcrypt.compareSync(loginPw, this.password); // this. acceses this user's stored hashed string password
+    }
+}
 
 // this is the part that provides context on how the inherited Model methods work: defines table columns and configuration
 User.init( // passing these two argument objects sets the User's data & the table configuration
