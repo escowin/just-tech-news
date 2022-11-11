@@ -8,6 +8,7 @@ router.get("/", (req, res) => {
   Post.findAll({
     // query config
     attributes: ["id", "post_url", "title", "created_at"],
+    order: [['created_at', 'DESC']],
     include: [
         {
             model: User,
@@ -88,6 +89,22 @@ router.put('/:id', (req, res) => { // using the request parameter to find post
     });
 });
 
-// 13.3.6 delete a post
+// - delete a post | retrieves & deletes a post by its id
+router.delete('/:id', (req, res) => { // insomnia displays the number of rows/entries affected by this query
+    Post.destroy({
+        where: { id: req.params.id}
+    })
+    .then(dbPostData => {
+        if (!dbPostData) {
+            res.status(404).json({ message: 'post with this id not found'});
+            return;
+        }
+        res.json(dbPostData);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+    });
+});
 
 module.exports = router;
