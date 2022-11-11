@@ -1,7 +1,8 @@
 const router = require("express").Router();
 const { Post, User } = require("../../models");
 
-// get all posts | retrieves all posts in the database
+// CRUD operations
+// - get all posts | retrieves all posts in the database
 router.get("/", (req, res) => {
   console.log("===========");
   Post.findAll({
@@ -21,7 +22,7 @@ router.get("/", (req, res) => {
   });
 });
 
-// get a post | retrieves a post by its id
+// - get a post | retrieves a post by its id
 router.get('/:id', (req, res) => {
     Post.findOne({
         where: {
@@ -37,7 +38,7 @@ router.get('/:id', (req, res) => {
     })
     .then(dbPostData => {
         if (!dbPostData) {
-            res.status(404).json({ message: 'no post found with this id '});
+            res.status(404).json({ message: 'post with this id not found'});
             return;
         }
         res.json(dbPostData);
@@ -48,6 +49,45 @@ router.get('/:id', (req, res) => {
     });
 });
 
-// pause 13.3.6 create a post
+// - create a post | assigns title, post_url, user_id values as req.body properties
+router.post('/', (req, res) => {
+    Post.create({ // sql-orm: using req.body to populate post table columns. created_at & updated_at are implied
+        title: req.body.title,
+        post_url: req.body.post_url,
+        user_id: req.body.user_id
+    })
+    .then(dbPostData => res.json(dbPostData))
+    .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+    });
+});
+
+// - update a post | retrieve a post by its id, then alter the value of the title during this instance
+router.put('/:id', (req, res) => { // using the request parameter to find post
+    Post.update( // insomnia | preview will display as 1. sql's way to verify that the number of rows changed in the last query
+        {
+            title: req.body.title // value used to replace the post's title
+        },
+        {
+            where: {
+                id: req.params.id
+            }
+        }
+    )
+    .then(dbPostData => {
+        if (!dbPostData) {
+            res.status(404).json({ message: 'post with this id not found'});
+            return;
+        }
+        res.json(dbPostData);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+    });
+});
+
+// 13.3.6 delete a post
 
 module.exports = router;
