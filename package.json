@@ -4,7 +4,7 @@
   "description": "13",
   "main": "server.js",
   "scripts": {
-    "sraer": "node server.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
