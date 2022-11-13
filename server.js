@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(routes);
 
 // turns on connection to database and server
-// true, DROP TABLE IF EXISTS
-sequelize.sync({ force: false }).then(() => {
+// - set to true when updating the relationship betwixt tables.
+sequelize.sync({ force: false }).then(() => { // sql DROP TABLE IF EXISTS
     app.listen(PORT, () => console.log('Now listening'));
 });

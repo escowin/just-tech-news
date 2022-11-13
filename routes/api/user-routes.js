@@ -1,13 +1,13 @@
 const router = require("express").Router();
-const { User, Post } = require("../../models");
+const { User, Post, Vote } = require("../../models");
 
 // restful api pattern https://restfulapi.net/
 // - name endpoints in a way that describe the data that being interfaced, /api/users
 // - use http methods like 'get, post, put, delete' to describe performing action interfacing with that endpoint, GET /api/users
 // - use proper http status codes like '400, 404, 500' to indicate errors in a request
 
-// crud operations
-// - get /api/users
+// crud operations for /api/users
+// - getting users
 router.get("/", (req, res) => {
   // orm | accesses User model and runs .findAll method
   User.findAll({
@@ -20,6 +20,7 @@ router.get("/", (req, res) => {
       res.status(500).json(err);
     });
 });
+// - getting a user
 router.get("/:id", (req, res) => {
   User.findOne({
     // SELECT * FROM users WHERE id = 1
@@ -31,6 +32,12 @@ router.get("/:id", (req, res) => {
       {
         model: Post,
         attributes: ['id', 'title', 'post_url', 'created_at']
+      },
+      { // recieves title information of every voted post by the user
+        model: Post,
+        attributes: ['title'],
+        through: Vote, // through tables provides the contact.
+        as: 'voted_posts'
       }
     ]
   })
