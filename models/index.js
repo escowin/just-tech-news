@@ -1,3 +1,4 @@
+// importing all models to the index
 const User = require('./User');
 const Post = require('./Post');
 const Vote = require('./Vote');
@@ -17,7 +18,7 @@ Post.belongsTo(User, {
 User.belongsToMany(Post, {
     through: Vote, // references the Vote through table
     as: "voted_posts",
-    foreignKey: "post_id"
+    foreignKey: "user_id"
 });
 
 Post.belongsToMany(User, {
