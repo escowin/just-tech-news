@@ -7,4 +7,5 @@ router.use((req, res) => {
     res.status(404).end();
 });
 
+// required import defined as 'routes' in ./server.js
 module.exports = router;
