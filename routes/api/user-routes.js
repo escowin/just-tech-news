@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { User, Post, Vote } = require("../../models");
+const { User, Post, Vote, Comment } = require("../../models");
 
 // restful api pattern https://restfulapi.net/
 // - name endpoints in a way that describe the data that being interfaced, /api/users
@@ -29,9 +29,18 @@ router.get("/:id", (req, res) => {
       id: req.params.id,
     },
     include: [
+
       {
         model: Post,
         attributes: ['id', 'title', 'post_url', 'created_at']
+      },
+      { // includes Comment model
+        model: Comment,
+        attributes: ['id', 'comment_text', 'created_at'],
+        include: {
+          model: Post,
+          attributes: ['title']
+        }
       },
       { // recieves title information of every voted post by the user
         model: Post,
