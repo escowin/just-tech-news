@@ -41,4 +41,10 @@ router.get('/', (req, res) => {
     });
 });
 
+// route | ::server::/login
+router.get('/login', (req, res) => {
+    // view | ./views/login
+    res.render('login');
+});
+
 module.exports = router;

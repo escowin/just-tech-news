@@ -79,10 +79,11 @@ router.post("/", (req, res) => { // api/users/
 });
 
 // - verifying user identity w/ email & password
-router.post('/login', (req, res) => { // route: /api/users/login
+router.post('/login', (req, res) => {
+  // route: /api/users/login
   // {email: 'email', password: 'password'}
-  User.findOne({ // SELECT 'id', 'username', 'email' 'password'
-    where: { // FROM 'user' AS 'user' WHERE 'user', 'email' = 'email value';
+  User.findOne({
+    where: {
       email: req.body.email
     }
   }).then(dbUserData => {
@@ -102,7 +103,7 @@ router.post('/login', (req, res) => { // route: /api/users/login
   })
 });
 
-// - put /api/users/1
+// - crud | update /api/users/:id
 router.put("/:id", (req, res) => {
   // UPDATE users
   // SET username = 'username', email = 'email', password = 'password'
@@ -114,7 +115,7 @@ router.put("/:id", (req, res) => {
     },
   })
     .then((dbUserData) => {
-      if (!dbUserData[0]) {
+      if (!dbUserData) {
         res.status(404).json({ message: "no user found with this id" });
         return;
       }
@@ -126,7 +127,7 @@ router.put("/:id", (req, res) => {
     });
 });
 
-// - delete /api/users/1
+// - delete /api/users/:id
 router.delete("/:id", (req, res) => {
   User.destroy({
     where: {
