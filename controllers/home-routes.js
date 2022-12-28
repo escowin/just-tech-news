@@ -3,6 +3,7 @@ const sequelize = require('../config/connection');
 const { Post, User, Comment } = require('../models');
 
 router.get('/', (req, res) => {
+    console.log(req.session)
     // res.render | specifies which template to usee
     Post.findAll({
         // 
@@ -44,6 +45,11 @@ router.get('/', (req, res) => {
 // route | ::server::/login
 router.get('/login', (req, res) => {
     // view | ./views/login
+    if (req.session.loggedIn) {
+        res.redirect('/');
+        return;
+    }
+    
     res.render('login');
 });
 

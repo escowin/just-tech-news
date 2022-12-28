@@ -71,7 +71,17 @@ router.post("/", (req, res) => { // api/users/
     email: req.body.email,
     password: req.body.password,
   })
-    .then((dbUserData) => res.json(dbUserData))
+  // login | replaced then((dbUserData) => res.json(dbUserData))
+    .then(dbUserData => {
+      req.session.save(() => {
+        // server acccess to user_id, username, and loged in boolean
+        req.session.user_id = dbUserData.id;
+        req.session.username = dbUserData.username;
+        req.session.loggedIn = true;
+
+        res.json(dbUserData);
+      });
+    })
     .catch((err) => {
       console.log(err);
       res.status(500).json(err);
@@ -88,7 +98,7 @@ router.post('/login', (req, res) => {
     }
   }).then(dbUserData => {
     if (!dbUserData) {
-      res.status(400).json({ message: 'corresponding user not found with this email'});
+      res.status(400).json({ message: 'user not found with this email'});
       return;
     }
 
@@ -99,8 +109,15 @@ router.post('/login', (req, res) => {
       return;
     }
 
-    res.json({ user: dbUserData, message: 'you are now logged in' });
-  })
+    req.session.save(() => {
+      // declared session variables
+      req.session.user_id = dbUserData.id;
+      req.session.username = dbUserData.username;
+      req.session.loggedIn = true;
+
+      res.json({ user: dbUserData, message: 'you are now logged in' });
+    });
+  });
 });
 
 // - crud | update /api/users/:id

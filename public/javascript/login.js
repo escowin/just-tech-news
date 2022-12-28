@@ -1,6 +1,6 @@
 // logic
-// . asynchronous | posting sign up form values to the database
-// .. es6 | async & await | error handling, replaces then().catch()
+// . asynchronous | posting values to the database
+// . es6 | async & await | error handling, replaces then().catch()
 async function signupFormHandler(e) {
     e.preventDefault();
 
@@ -8,7 +8,7 @@ async function signupFormHandler(e) {
     const email = document.getElementById('email-signup').value.trim();
     const password = document.getElementById('password-signup').value.trim();
 
-    // if sign up parameters are met, json data is posted through route /api/users as a string. 
+    // when all parameters are met, json data is posted via /api/users as a string. 
     if (username && email && password) {
       const response = await fetch('/api/users', {
         method: 'post',
@@ -19,9 +19,41 @@ async function signupFormHandler(e) {
         }),
         headers: { 'Content-Type': 'application/json'}
       });
-      console.log(response);
+
+      // checks the response status
+      if (response.ok) {
+        console.log('success');
+      } else {
+        alert(response.statusText);
       }
     }
+    }
 
+async function loginFormHandler(e) {
+  e.preventDefault();
+
+  const email = document.getElementById('email-login').value.trim();
+  const password = document.getElementById('password-login').value.trim();
+  
+  // posts login values as a stringified json object to the database.
+  if (email && password) {
+    const response = await fetch('/api/users/login', {
+      method: 'post',
+      body: JSON.stringify({
+        email,
+        password
+      }),
+      headers: { 'Content-Type': 'application/json'}
+    });
+
+    // 
+    if (response.ok) {
+      document.location.replace('/');
+    } else {
+      alert(response.statusText)
+    }
+  }
+}
+// 
 // calls
 document.querySelector('.signup-form').addEventListener('submit', signupFormHandler);
