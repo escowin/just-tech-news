@@ -1,5 +1,7 @@
-// logic | posting the form values to the database
-function signupFormHandler(e) {
+// logic
+// . asynchronous | posting sign up form values to the database
+// .. es6 | async & await | error handling, replaces then().catch()
+async function signupFormHandler(e) {
     e.preventDefault();
 
     const username = document.getElementById('username-signup').value.trim();
@@ -8,15 +10,16 @@ function signupFormHandler(e) {
 
     // if sign up parameters are met, json data is posted through route /api/users as a string. 
     if (username && email && password) {
-        fetch('/api/users', {
-          method: 'post',
-          body: JSON.stringify({
-            username,
-            email,
-            password
-          }),
-          headers: { 'Content-Type': 'application/json' }
-        }).then((response) => {console.log(response)})
+      const response = await fetch('/api/users', {
+        method: 'post',
+        body: JSON.stringify({
+          username,
+          email,
+          password
+        }),
+        headers: { 'Content-Type': 'application/json'}
+      });
+      console.log(response);
       }
     }
 
