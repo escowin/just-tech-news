@@ -6,8 +6,8 @@ const { User, Post, Vote, Comment } = require("../../models");
 // - use http methods like 'get, post, put, delete' to describe performing action interfacing with that endpoint, GET /api/users
 // - use proper http status codes like '400, 404, 500' to indicate errors in a request
 
-// crud operations for /api/users
-// - getting users
+// crud | gets all users
+// /api/users/
 router.get("/", (req, res) => {
   // orm | accesses User model and runs .findAll method
   User.findAll({
@@ -20,7 +20,9 @@ router.get("/", (req, res) => {
       res.status(500).json(err);
     });
 });
-// - getting a user
+
+// crud | get a user
+// /api/users/:id
 router.get("/:id", (req, res) => {
   User.findOne({
     // SELECT * FROM users WHERE id = 1
@@ -63,7 +65,8 @@ router.get("/:id", (req, res) => {
     });
 });
 
-// - posting a new user
+// crud | post a new user
+// /api/users/?
 router.post("/", (req, res) => { // api/users/
   // INSERT INTO (users, email, password) VALUES ("username value", "email value, "password value");
   User.create({
@@ -89,6 +92,7 @@ router.post("/", (req, res) => { // api/users/
 });
 
 // - verifying user identity w/ email & password
+// - /api/users/login
 router.post('/login', (req, res) => {
   // route: /api/users/login
   // {email: 'email', password: 'password'}
@@ -120,11 +124,22 @@ router.post('/login', (req, res) => {
   });
 });
 
-// - crud | update /api/users/:id
+// crud | post | logging out
+router.post('/logout', (req, res) => {
+  // must be logged in to log out
+  if (req.session.loggedIn) {
+    req.session.destroy(() => {
+      res.status(204).end();
+    });
+  } else {
+    res.status(404).end();
+  }
+});
+
+// - crud | update users
+// - /api/users/:id
 router.put("/:id", (req, res) => {
-  // UPDATE users
-  // SET username = 'username', email = 'email', password = 'password'
-  // WHERE id = 1;
+  // pass in req.body instead to only update what's passed through
   User.update(req.body, {
     individualHooks: true,
     where: {
@@ -144,12 +159,13 @@ router.put("/:id", (req, res) => {
     });
 });
 
-// - delete /api/users/:id
+// - crud | delete users
+// - /api/users/:id
 router.delete("/:id", (req, res) => {
   User.destroy({
     where: {
-      id: req.params.id,
-    },
+      id: req.params.id
+    }
   })
     .then((dbUserData) => {
       if (!dbUserData) {

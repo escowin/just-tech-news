@@ -4,6 +4,7 @@ const { Post, User, Comment } = require('../models');
 
 router.get('/', (req, res) => {
     console.log(req.session)
+    console.log('======================');
     // res.render | specifies which template to usee
     Post.findAll({
         // 
@@ -32,7 +33,8 @@ router.get('/', (req, res) => {
     .then(dbPostData => {
         // console.log(dbPostData[0]);
         // dbPostData contains multiples objects (post, _previousDataValues). by first mapping to the post object, the get method then serializes the specified properties of the post object.
-        const posts = dbPostData.map(post => post.get({ plain: true })); 
+        const posts = dbPostData.map(post => post.get({ plain: true }));
+        
         // passing in the serialized array of posts
         res.render('homepage', { posts });
     })
@@ -49,7 +51,7 @@ router.get('/login', (req, res) => {
         res.redirect('/');
         return;
     }
-    
+
     res.render('login');
 });
 

@@ -1,34 +1,6 @@
 // logic
 // . asynchronous | posting values to the database
 // . es6 | async & await | error handling, replaces then().catch()
-async function signupFormHandler(e) {
-    e.preventDefault();
-
-    const username = document.getElementById('username-signup').value.trim();
-    const email = document.getElementById('email-signup').value.trim();
-    const password = document.getElementById('password-signup').value.trim();
-
-    // when all parameters are met, json data is posted via /api/users as a string. 
-    if (username && email && password) {
-      const response = await fetch('/api/users', {
-        method: 'post',
-        body: JSON.stringify({
-          username,
-          email,
-          password
-        }),
-        headers: { 'Content-Type': 'application/json'}
-      });
-
-      // checks the response status
-      if (response.ok) {
-        console.log('success');
-      } else {
-        alert(response.statusText);
-      }
-    }
-    }
-
 async function loginFormHandler(e) {
   e.preventDefault();
 
@@ -43,17 +15,47 @@ async function loginFormHandler(e) {
         email,
         password
       }),
-      headers: { 'Content-Type': 'application/json'}
+      headers: { 'Content-Type': 'application/json' }
     });
 
     // 
     if (response.ok) {
       document.location.replace('/');
     } else {
-      alert(response.statusText)
+      alert(response.statusText);
     }
   }
 }
-// 
+
+async function signupFormHandler(e) {
+  e.preventDefault();
+
+  const username = document.getElementById('username-signup').value.trim();
+  const email = document.getElementById('email-signup').value.trim();
+  const password = document.getElementById('password-signup').value.trim();
+
+  // when all parameters are met, json data is posted via /api/users as a string. 
+  if (username && email && password) {
+    const response = await fetch('/api/users', {
+      method: 'post',
+      body: JSON.stringify({
+        username,
+        email,
+        password
+      }),
+      headers: { 'Content-Type': 'application/json'}
+    });
+
+    // checks the response status
+    if (response.ok) {
+      document.location.replace('/');
+    } else {
+      alert(response.statusText);
+    }
+  }
+}
+ 
 // calls
+document.querySelector('.login-form').addEventListener('submit', loginFormHandler);
+
 document.querySelector('.signup-form').addEventListener('submit', signupFormHandler);
