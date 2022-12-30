@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Just Tech News</title>
     <link rel="stylesheet" href="/stylesheets/style.css" />
+    {{#if loggedIn}}
+    <script defer src="/javascript/logout.js"></script>
+    {{/if}}
   </head>
 
   <body>
@@ -14,9 +17,12 @@
           <a href="/">Just tech news</a>
         </h1>
         <nav>
+          {{#if loggedIn}}
           {{!-- button styled a la link --}}
           <button id="logout" class="btn-no-style">logout</button>
+          {{else}}
           <a href="/login">login</a>
+          {{/if}}
         </nav>
       </header>
       <main>
@@ -26,7 +32,6 @@
         Thanks for visiting.
       </footer>
     </div>
-    <script src="/javascript/logout.js"></script>
   </body>
 
 </html>
