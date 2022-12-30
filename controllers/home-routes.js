@@ -94,7 +94,10 @@ router.get('/post/:id', (req, res) => {
 
         // passes the data to the template 
         // - views/single-post.handlebars
-        res.render('single-post', { post })
+        res.render('single-post', {
+            post,
+            loggedIn: req.session.loggedIn
+        });
     })
     .catch(err => {
         console.log(err);
