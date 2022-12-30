@@ -91,13 +91,16 @@ router.post("/", (req, res) => {
 // route : /api/posts/upvote
 // - update vote count | must be defined before /:id put route. preferential oop method to organize file codebase
 router.put("/upvote", (req, res) => {
-    // custom static method created in models/Post.js
-    Post.upvote(req.body, { Vote })
-     .then(updatePostData => res.json(updatePostData))
-     .catch(err => {
-        console.log(err);
-        res.status(400).json(err);
-     });
+  // while logged in session
+  if (req.session) {
+    // pass session id along with all destructure req.body properties
+    Post.upvote({ ...req.body, user_id: req.session.user_id }, { Vote, Comment, User })
+    .then(updatedVoteData => res.json(updatedVoteData))
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
+  }
 });
 
 // route : /api/posts/:id

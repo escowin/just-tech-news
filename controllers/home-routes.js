@@ -34,7 +34,7 @@ router.get('/', (req, res) => {
         // console.log(dbPostData[0]);
         // dbPostData contains multiples objects (post, _previousDataValues). by first mapping to the post object, the get method then serializes the specified properties of the post object.
         const posts = dbPostData.map(post => post.get({ plain: true }));
-        
+
         // passing in the serialized array of posts
         res.render('homepage', { posts });
     })
@@ -53,6 +53,53 @@ router.get('/login', (req, res) => {
     }
 
     res.render('login');
+});
+
+// route | ::server::/post/:id
+router.get('/post/:id', (req, res) => {
+    Post.findOne({
+        where: {
+            id: req.params.id
+        },
+        attributes: [
+            'id',
+            'post_url',
+            'title',
+            'created_at',
+            [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
+        ],
+        include: [
+            {
+                model: Comment,
+                attributes: ['id', 'comment_text', 'post_id', 'user_id', 'created_at'],
+                include: {
+                    model: User,
+                    attributes: ['username']
+                }
+            },
+            {
+                model: User,
+                attributes: ['username']
+            }
+        ]
+    })
+    .then(dbPostData => {
+        if (!dbPostData) {
+            res.status(404).json({ message: 'post with this id not found' });
+            return;
+        }
+
+        // serialized data
+        const post = dbPostData.get({ plain: true });
+
+        // passes the data to the template 
+        // - views/single-post.handlebars
+        res.render('single-post', { post })
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+    });
 });
 
 module.exports = router;
