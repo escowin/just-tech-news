@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { Post, User, Vote, Comment } = require("../../models");
 const sequelize = require("../../config/connection");
+const withAuth = require("../../utils/auth"); // authguards non-get routes
 
 // CRUD operations /api/posts
 // - get all posts | retrieves all posts in the database
@@ -74,12 +75,12 @@ router.get("/:id", (req, res) => {
 });
 
 // - create a post | assigns title, post_url, user_id values as req.body properties
-router.post("/", (req, res) => {
+router.post("/", withAuth, (req, res) => {
   Post.create({
     // sql-orm: using req.body to populate post table columns. created_at & updated_at are implied
     title: req.body.title,
     post_url: req.body.post_url,
-    user_id: req.body.user_id,
+    user_id: req.session.user_id, // user id is tied to logged in user
   })
     .then((dbPostData) => res.json(dbPostData))
     .catch((err) => {
@@ -90,7 +91,7 @@ router.post("/", (req, res) => {
 
 // route : /api/posts/upvote
 // - update vote count | must be defined before /:id put route. preferential oop method to organize file codebase
-router.put("/upvote", (req, res) => {
+router.put("/upvote", withAuth, (req, res) => {
   // while logged in session
   if (req.session) {
     // pass session id along with all destructure req.body properties
@@ -105,7 +106,7 @@ router.put("/upvote", (req, res) => {
 
 // route : /api/posts/:id
 // - update a post | retrieve a post by its id, then alter the value of the title during this instance
-router.put("/:id", (req, res) => {
+router.put("/:id", withAuth, (req, res) => {
   // using the request parameter to find post
   Post.update(
     // insomnia | preview will display as 1. sql's way to verify that the number of rows changed in the last query
@@ -132,7 +133,7 @@ router.put("/:id", (req, res) => {
 });
 
 // - delete a post | retrieves & deletes a post by its id
-router.delete("/:id", (req, res) => {
+router.delete("/:id", withAuth, (req, res) => {
   // insomnia displays the number of rows/entries affected by this query
   Post.destroy({
     where: { id: req.params.id },

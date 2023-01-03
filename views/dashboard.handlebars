@@ -1,3 +1,5 @@
+<script defer src="/javascript/add-post.js"></script>
+
 <section>
     <h2>create new post</h2>
 
@@ -13,3 +15,17 @@
         <button type="submit" class="btn">create</button>
     </form>
 </section>
+
+{{#if posts.length}}
+<section>
+    <h2>your posts</h2>
+    <ol>
+        {{#each posts as |post|}}
+        <li>
+            {{> post-info post}}
+            <a href="/dashboard/edit/{{post.id}}" class="edit-link">edit</a>
+        </li>
+        {{/each}}
+    </ol>
+</section>
+{{/if}}

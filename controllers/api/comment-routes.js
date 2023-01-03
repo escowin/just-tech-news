@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const { Comment, Post } = require("../../models");
+const withAuth = require("../../utils/auth"); // authguards non-get routes
 
 // CRUD operations
 // route | /api/comments
@@ -12,7 +13,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.post("/", (req, res) => {
+router.post("/", withAuth, (req, res) => {
   // when logged in
   if (req.session) {
    Comment.create({
@@ -29,7 +30,7 @@ router.post("/", (req, res) => {
   }
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", withAuth, (req, res) => {
   Post.destroy({
     where: { id: req.params.id },
   })
