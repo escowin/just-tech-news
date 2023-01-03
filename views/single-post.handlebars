@@ -1,0 +1,24 @@
+{{#if loggedIn}}
+<script defer src="/javascript/comment.js"></script>
+<script defer src="/javascript/upvote.js"></script>
+{{/if}}
+
+{{!-- renders post-info partial, passing post object --}}
+{{!-- **pause 14.4.3 ** --}}
+{{> post-info post }}
+
+{{#if loggedIn}}
+<form class="comment-form">
+    <div>
+        <textarea name="comment-body"></textarea>
+    </div>
+
+    <div>
+        <button type="submit">add comment</button>
+        <button type="button" class="upvote-btn">upvote</button>
+    </div>
+</form>
+{{/if}}
+
+{{!-- partials/comments --}}
+{{> comments post.comments}}

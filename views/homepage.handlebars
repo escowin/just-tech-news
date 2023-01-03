@@ -1,0 +1,9 @@
+<ol class="post-list">
+    {{!-- loops through the serialize posts array for display. variable is declared as post --}}
+    {{#each posts as |post|}}
+    <li>
+        {{!-- renders post-info partial. syntax | > 'partial-file' 'object-passed-into-partial' --}}
+        {{> post-info post }}
+    </li>
+    {{/each}}
+</ol>
