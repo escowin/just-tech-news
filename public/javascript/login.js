@@ -18,9 +18,9 @@ async function loginFormHandler(e) {
       headers: { 'Content-Type': 'application/json' }
     });
 
-    // 
+    // redirects logged in user to dashboard
     if (response.ok) {
-      document.location.replace('/');
+      document.location.replace('/dashboard');
     } else {
       alert(response.statusText);
     }
@@ -57,5 +57,4 @@ async function signupFormHandler(e) {
  
 // calls
 document.querySelector('.login-form').addEventListener('submit', loginFormHandler);
-
 document.querySelector('.signup-form').addEventListener('submit', signupFormHandler);
