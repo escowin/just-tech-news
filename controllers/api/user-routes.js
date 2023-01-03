@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const { User, Post, Vote, Comment } = require("../../models");
-const withAuth = require("../../utils/auth"); // authguards non-get routes
 
 // restful api pattern https://restfulapi.net/
 // - name endpoints in a way that describe the data that being interfaced, /api/users
@@ -68,7 +67,7 @@ router.get("/:id", (req, res) => {
 
 // crud | post a new user
 // /api/users/?
-router.post("/", withAuth, (req, res) => { // api/users/
+router.post("/", (req, res) => { // api/users/
   // INSERT INTO (users, email, password) VALUES ("username value", "email value, "password value");
   User.create({
     username: req.body.username,
@@ -94,7 +93,7 @@ router.post("/", withAuth, (req, res) => { // api/users/
 
 // - verifying user identity w/ email & password
 // - /api/users/login
-router.post('/login', withAuth, (req, res) => {
+router.post('/login', (req, res) => {
   // route: /api/users/login
   // {email: 'email', password: 'password'}
   User.findOne({
@@ -126,7 +125,7 @@ router.post('/login', withAuth, (req, res) => {
 });
 
 // crud | post | logging out
-router.post('/logout', withAuth, (req, res) => {
+router.post('/logout', (req, res) => {
   // must be logged in to log out
   if (req.session.loggedIn) {
     req.session.destroy(() => {
@@ -139,7 +138,7 @@ router.post('/logout', withAuth, (req, res) => {
 
 // - crud | update users
 // - /api/users/:id
-router.put("/:id", withAuth, (req, res) => {
+router.put("/:id", (req, res) => {
   // pass in req.body instead to only update what's passed through
   User.update(req.body, {
     individualHooks: true,
@@ -162,7 +161,7 @@ router.put("/:id", withAuth, (req, res) => {
 
 // - crud | delete users
 // - /api/users/:id
-router.delete("/:id", withAuth, (req, res) => {
+router.delete("/:id", (req, res) => {
   User.destroy({
     where: {
       id: req.params.id
