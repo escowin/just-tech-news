@@ -4,7 +4,9 @@ const routes = require('./controllers/'); // collects & packages everything for 
 const sequelize = require('./config/connection'); // connection to Sequelize
 const exphbs = require('express-handlebars'); // template views
 const session = require('express-session'); // login method
-const hbs = exphbs.create({});
+const helpers = require('./utils/helpers'); // format helpers
+
+const hbs = exphbs.create({ helpers }); // passing helpers
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const sess = {
